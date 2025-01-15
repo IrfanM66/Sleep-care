@@ -228,13 +228,13 @@
               Menjaga <b>nutrisi</b> dalam tubuh sangat penting karena nutrisi
               mendukung berbagai fungsi vital tubuh, seperti pertumbuhan,
               perkembangan, dan kesehatan organ tubuh. Asupan yang tepat dapat
-              memperkuat <b>sistem kekebalan tubuh</b>, meningkatkan energi, serta
-              mencegah berbagai penyakit kronis seperti diabetes dan penyakit
-              jantung. Selain itu, nutrisi juga berperan dalam menjaga kesehatan
-              mental dan pemulihan tubuh setelah cedera atau sakit. Dengan
-              memastikan tubuh mendapatkan nutrisi yang cukup dan seimbang, kita
-              dapat menjaga kualitas hidup dan menjalani aktivitas sehari-hari
-              dengan lebih optimal.
+              memperkuat <b>sistem kekebalan tubuh</b>, meningkatkan energi,
+              serta mencegah berbagai penyakit kronis seperti diabetes dan
+              penyakit jantung. Selain itu, nutrisi juga berperan dalam menjaga
+              kesehatan mental dan pemulihan tubuh setelah cedera atau sakit.
+              Dengan memastikan tubuh mendapatkan nutrisi yang cukup dan
+              seimbang, kita dapat menjaga kualitas hidup dan menjalani
+              aktivitas sehari-hari dengan lebih optimal.
             </p>
           </div>
         </div>
@@ -242,18 +242,22 @@
     </div>
     <!-- About End -->
 
-    <div class="kotak">
-      <div class="title">Yuk tanya-tanya gizi di SleepBot!</div>
-      <div class="chat" id="chat"></div>
-      <input
-        type="text"
-        class="input"
-        id="input"
-        placeholder="Type your message here...."
-      />
-      <button class="button" id="button">
-        <i class="fa-brands fa-telegram"></i>
-      </button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <h3>Chatbot AI</h3>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <!-- Pesan-pesan akan muncul di sini -->
+      </div>
+      <div class="chat-footer">
+        <input
+          type="text"
+          id="userInput"
+          class="user-input"
+          placeholder="Ketik pesan Anda..."
+        />
+        <button id="sendButton">Kirim</button>
+      </div>
     </div>
 
     <!-- Footer Start -->
@@ -353,89 +357,69 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     <script>
-      // A simple chatbot that responds with some predefined answers
-      function chatbot(input) {
-        let output = "";
-        input = input.toLowerCase();
-        if (input.includes("hello") || input.includes("hi")) {
-          output = "Halo, adakah yang bisa saya bantu?";
-        } else if (
-          input.includes("Berikan saya contoh makanan yang tinggi protein")
-        ) {
-          output =
-            "Baiklah, makanan yang tinggi protein contohnya ayam, ikan, daging sapi, telur dan masih banyak lagi";
-        } else if (
-          input.includes("Bagaimana jika makanan yang mengandung karbohidrat?")
-        ) {
-          output =
-            "Makanan yang mengandung karbohidrat, anntara lain adalah nasi, gandum, kentang dan masih banyak lagi";
-        } else if (input.includes("Apa saja makanan yang mengandung serat?")) {
-          output =
-            "Contoh makanan yang mengandung serat yaitu buah, kacang-kacangan, dll";
-        } else if (input.includes("tell me a joke")) {
-          output =
-            "Why did the chicken go to the seance? To get to the other side.";
-        } else {
-          output = "Sorry, I don't understand that. Please try something else.";
-        }
-        return output;
+      // Mendefinisikan pertanyaan dan jawaban chatbot
+      const responses = {
+        hai: "Halo! Apa yang bisa saya bantu?",
+        "apa yang dimaksud dengan gizi yang baik?":
+          "Gizi yang baik berarti mengonsumsi makanan yang seimbang dan mencakup semua nutrisi yang dibutuhkan tubuh, seperti karbohidrat, protein, lemak sehat, vitamin, dan mineral, untuk menjaga kesehatan dan mendukung pertumbuhan serta perkembangan tubuh.",
+        "mengapa gizi penting untuk kesehatan tubuh?":
+          "Gizi penting untuk memberikan energi, memperbaiki sel tubuh yang rusak, meningkatkan sistem kekebalan tubuh, mendukung proses metabolisme, dan menjaga fungsi tubuh yang optimal. Gizi yang buruk dapat menyebabkan berbagai masalah kesehatan, termasuk malnutrisi dan penyakit kronis.",
+        "apa saja jenis makanan yang mengandung protein?":
+          "Makanan yang mengandung protein antara lain daging, ikan, telur, kacang-kacangan, tempe, tahu, susu, dan produk olahan susu seperti yogurt.",
+        "bagaimana cara mendapatkan asupan karbohidrat yang sehat?":
+          "Asupan karbohidrat yang sehat bisa diperoleh dari sumber karbohidrat kompleks seperti beras merah, quinoa, oatmeal, ubi jalar, dan sayuran yang kaya serat. Karbohidrat ini dicerna lebih lambat dan memberikan energi yang tahan lama.",
+        "apa itu lemak sehat, dan di mana kita bisa menemukannya?":
+          "Lemak sehat adalah jenis lemak yang baik untuk tubuh, seperti lemak tak jenuh yang ditemukan pada alpukat, minyak zaitun, kacang-kacangan, biji-bijian, dan ikan berlemak seperti salmon. Lemak sehat membantu menurunkan risiko penyakit jantung dan mendukung fungsi otak.",
+        "apa peran vitamin dan mineral dalam tubuh?":
+          "Vitamin dan mineral berperan penting dalam mendukung berbagai fungsi tubuh, seperti memperkuat sistem kekebalan tubuh, mendukung pembentukan tulang dan gigi, meningkatkan fungsi otak, serta menjaga keseimbangan cairan dan elektrolit dalam tubuh.",
+        bye: "Terima kasih sudah mengobrol, semoga hari Anda menyenankan!",
+      };
+
+      // Fungsi untuk menambahkan pesan ke dalam chat
+      function appendMessage(message, sender) {
+        const chatBody = document.getElementById("chatBody");
+        const messageElement = document.createElement("div");
+
+        // Menentukan kelas berdasarkan pengirim
+        messageElement.classList.add(
+          sender === "user" ? "user-message" : "bot-message"
+        );
+        messageElement.innerText = message;
+        chatBody.appendChild(messageElement);
+
+        // Scroll otomatis ke bawah jika pesan baru ditambahkan
+        chatBody.scrollTop = chatBody.scrollHeight;
       }
 
-      // Display the user message on the chat
-      function displayUserMessage(message) {
-        let chat = document.getElementById("chat");
-        let userMessage = document.createElement("div");
-        userMessage.classList.add("message");
-        userMessage.classList.add("user");
-        let userAvatar = document.createElement("div");
-        userAvatar.classList.add("avatar");
-        let userText = document.createElement("div");
-        userText.classList.add("text");
-        userText.innerHTML = message;
-        userMessage.appendChild(userAvatar);
-        userMessage.appendChild(userText);
-        chat.appendChild(userMessage);
-        chat.scrollTop = chat.scrollHeight;
-      }
-
-      // Display the bot message on the chat
-      function displayBotMessage(message) {
-        let chat = document.getElementById("chat");
-        let botMessage = document.createElement("div");
-        botMessage.classList.add("message");
-        botMessage.classList.add("bot");
-        let botAvatar = document.createElement("div");
-        botAvatar.classList.add("avatar");
-        let botText = document.createElement("div");
-        botText.classList.add("text");
-        botText.innerHTML = message;
-        botMessage.appendChild(botAvatar);
-        botMessage.appendChild(botText);
-        chat.appendChild(botMessage);
-        chat.scrollTop = chat.scrollHeight;
-      }
-
-      // Send the user message and get the bot response
+      // Fungsi untuk mengirim pesan
       function sendMessage() {
-        let input = document.getElementById("input").value;
-        if (input) {
-          displayUserMessage(input);
-          let output = chatbot(input);
-          setTimeout(function () {
-            displayBotMessage(output);
-          }, 1000);
-          document.getElementById("input").value = "";
+        const userInput = document.getElementById("userInput");
+        const userMessage = userInput.value.trim().toLowerCase(); // Menurunkan semua huruf menjadi kecil
+
+        if (userMessage) {
+          appendMessage(userMessage, "user");
+          userInput.value = ""; // Mengosongkan input setelah pesan dikirim
+
+          // Mencari respons chatbot berdasarkan pertanyaan (tanpa memperhatikan huruf besar/kecil)
+          const responseMessage =
+            responses[userMessage] ||
+            "Maaf, saya tidak mengerti pertanyaan Anda.";
+
+          // Menampilkan respons chatbot setelah jeda 1 detik
+          setTimeout(() => appendMessage(responseMessage, "bot"), 1000);
         }
       }
 
-      // Add a click event listener to the button
-      document.getElementById("button").addEventListener("click", sendMessage);
-
-      // Add a keypress event listener to the input
+      // Menambahkan event listener pada tombol kirim
       document
-        .getElementById("input")
+        .getElementById("sendButton")
+        .addEventListener("click", sendMessage);
+
+      // Menambahkan event listener untuk input enter
+      document
+        .getElementById("userInput")
         .addEventListener("keypress", function (event) {
-          if (event.keyCode == 13) {
+          if (event.key === "Enter") {
             sendMessage();
           }
         });
